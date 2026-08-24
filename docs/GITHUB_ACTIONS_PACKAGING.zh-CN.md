@@ -17,6 +17,8 @@ ftp-synchronization-<版本>-macos-arm64.tar.gz
 
 每个文件都有同名 `.sha256`。普通 push 的 Actions Artifacts 保留 7 天；`v*` 标签在全部任务成功后创建 GitHub Release。
 
+Release Job 不检出源码，因此 `gh release create` 必须通过 `--repo "$GITHUB_REPOSITORY"` 显式指定目标仓库，不能依赖本地 `.git` 目录推断仓库名。
+
 ## 2. JAR 与 JRE 边界
 
 构建阶段使用 `actions/setup-java@v5` 安装 Liberica Java 21 `jdk+fx` 并编译 JavaFX 源码。Maven Shade 仅聚合 Jackson、Commons Net 等非 JavaFX 运行依赖，并排除：
