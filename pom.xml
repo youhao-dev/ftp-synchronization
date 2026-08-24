@@ -6,9 +6,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.you</groupId>
-    <artifactId>ftp-upload-javafx</artifactId>
+    <artifactId>ftp-synchronization</artifactId>
     <version>1.0.0</version>
-    <name>FTP Upload JavaFX</name>
+    <name>FTP Synchronization</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,6 +16,7 @@
         <javafx.version>21.0.6</javafx.version>
         <jackson.version>2.18.2</jackson.version>
         <commons-net.version>3.11.1</commons-net.version>
+        <junit.version>5.11.4</junit.version>
     </properties>
 
     <dependencies>
@@ -48,12 +49,20 @@
             <version>${jackson.version}</version>
         </dependency>
 
+        <!-- 自动化测试 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
 
         <!-- 最终JAR名称 -->
-        <finalName>ftp-upload-javafx</finalName>
+        <finalName>ftp-synchronization</finalName>
 
         <plugins>
 
@@ -73,7 +82,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>cn.you.ftpupload.FtpUploadApplication</mainClass>
+                    <mainClass>cn.you.ftpsynchronization.FtpSynchronizationApplication</mainClass>
                 </configuration>
             </plugin>
 
@@ -141,8 +150,8 @@
 
             </plugin>
 
-            <!-- ==================== Shade胖JAR ==================== -->
-            <!-- ProGuard完成后，把Jackson、Commons-Net等第三方依赖打入JAR -->
+            <!-- ==================== 应用发布JAR ==================== -->
+            <!-- ProGuard完成后聚合Jackson、Commons-Net等依赖；JavaFX始终由随包JRE提供 -->
             <!-- JavaFX不打入JAR，由Liberica JRE Full提供 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -151,7 +160,7 @@
 
                 <executions>
                     <execution>
-                        <id>shade-fat-jar</id>
+                        <id>shade-release-jar</id>
                         <phase>package</phase>
 
                         <goals>
@@ -200,7 +209,11 @@
 
                                 <!-- 设置启动类 -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>cn.you.ftpupload.FtpUploadApplication</mainClass>
+                                    <mainClass>cn.you.ftpsynchronization.FtpSynchronizationApplication</mainClass>
+                                    <manifestEntries>
+                                        <Implementation-Title>FTP Synchronization</Implementation-Title>
+                                        <Implementation-Version>${project.version}</Implementation-Version>
+                                    </manifestEntries>
                                 </transformer>
 
                             </transformers>
@@ -210,6 +223,43 @@
                     </execution>
                 </executions>
 
+            </plugin>
+
+            <!-- ==================== JUnit 5 ==================== -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.2</version>
+            </plugin>
+
+            <!-- ==================== 发布JAR边界检查 ==================== -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>verify-no-javafx-in-jar</id>
+                        <phase>verify</phase>
+                        <goals><goal>run</goal></goals>
+                        <configuration>
+                            <target>
+                                <resourcecount property="javafx.entry.count">
+                                    <zipfileset src="${project.build.directory}/${project.build.finalName}.jar">
+                                        <include name="javafx/**"/>
+                                        <include name="com/sun/javafx/**"/>
+                                        <include name="**/*javafx*.dll"/>
+                                        <include name="**/*javafx*.so"/>
+                                        <include name="**/*javafx*.dylib"/>
+                                    </zipfileset>
+                                </resourcecount>
+                                <fail message="发布 JAR 中检测到 JavaFX 类、模块或本地库">
+                                    <condition><not><equals arg1="${javafx.entry.count}" arg2="0"/></not></condition>
+                                </fail>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
         </plugins>

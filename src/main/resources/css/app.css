@@ -1,7 +1,7 @@
 /* ==================== 全局 ==================== */
 
 .root {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 14px;
     -fx-text-fill: #263147;
 }
@@ -18,7 +18,7 @@
 .menu-button,
 .context-menu,
 .tooltip {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
 }
 
 .app-root,
@@ -166,7 +166,7 @@
 /* ==================== 通用按钮 ==================== */
 
 .button {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 14px;
     -fx-cursor: hand;
     -fx-background-radius: 7px;
@@ -231,7 +231,7 @@
 
 .rules-table,
 .preview-table {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 13px;
     -fx-background-color: white;
     -fx-background-radius: 8px;
@@ -257,7 +257,7 @@
 
 .rules-table .column-header .label,
 .preview-table .column-header .label {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 13px;
     -fx-text-fill: #59657c;
     -fx-font-weight: bold;
@@ -291,7 +291,7 @@
 
 .rules-table .table-cell,
 .preview-table .table-cell {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 13px;
     -fx-text-fill: #313c50;
     -fx-border-color: transparent;
@@ -326,7 +326,7 @@
 
 /* 查看 */
 .rules-table .table-btn {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-background-color: transparent;
     -fx-padding: 5px 7px;
     -fx-font-size: 13px;
@@ -460,7 +460,7 @@
 }
 
 .dialog-title {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 22px;
     -fx-font-weight: bold;
     -fx-text-fill: #172033;
@@ -486,14 +486,14 @@
 /* ==================== 表单 ==================== */
 
 .form-label {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-text-fill: #3b465d;
     -fx-font-size: 14px;
     -fx-font-weight: 600;
 }
 
 .form-field {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 14px;
     -fx-background-color: white;
     -fx-border-color: #d7dee9;
@@ -521,7 +521,7 @@
 }
 
 .form-combo {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 14px;
     -fx-background-color: white;
     -fx-border-color: #d7dee9;
@@ -583,7 +583,7 @@
 }
 
 .token-title {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-text-fill: #3b465d;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
@@ -596,7 +596,7 @@
 }
 
 .legacy-notice {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 13px;
     -fx-background-color: #fff8e8;
     -fx-background-radius: 7px;
@@ -607,7 +607,7 @@
 }
 
 .preview-note {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-background-color: #f4f7fc;
     -fx-background-radius: 7px;
     -fx-padding: 8px 10px;
@@ -623,7 +623,7 @@
 }
 
 .settings-status {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-text-fill: #657189;
     -fx-font-size: 13px;
 }
@@ -642,22 +642,22 @@
 
 .text-field,
 .password-field {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 14px;
 }
 
 .text-area {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 14px;
 }
 
 .combo-box {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 14px;
 }
 
 .combo-box .list-cell {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 14px;
 }
 
@@ -665,7 +665,7 @@
 /* ==================== Tooltip ==================== */
 
 .tooltip {
-    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-family: "System";
     -fx-font-size: 13px;
     -fx-background-color: #28344b;
     -fx-text-fill: white;

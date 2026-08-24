@@ -1,3 +1,3 @@
 @echo off
-java -jar target\ftp-upload-javafx.jar
+"D:\Program Files\Java\jdk-21.0.10+7\bin\java.exe" -jar target\ftp-synchronization.jar
 pause

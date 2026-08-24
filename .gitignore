@@ -1,5 +1,6 @@
 HELP.md
 target/
+.m2-repository/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
@@ -35,3 +36,4 @@ build/
 ### 其它 ###
 pathRules.json
 ftp-upload-settings.properties
+ftp-synchronization-settings.properties
