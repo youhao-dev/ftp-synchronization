@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.you.ftpupload.view.AddController" styleClass="dialog-root">
+    <top>
+        <VBox spacing="5" styleClass="dialog-header">
+            <padding><Insets top="22" right="28" bottom="18" left="28"/></padding>
+            <Label fx:id="dialogTitle" text="新增传输规则" styleClass="dialog-title"/>
+            <Label fx:id="dialogDescription" text="配置上传/下载方向、本地目录与 FTP 目录，底部示例会随输入实时变化" styleClass="dialog-subtitle"/>
+        </VBox>
+    </top>
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="dialog-scroll">
+            <content>
+                <VBox spacing="16" styleClass="dialog-content">
+                    <padding><Insets top="18" right="26" bottom="18" left="26"/></padding>
+                    <Label fx:id="ruleId" visible="false" managed="false"/>
+
+                    <VBox spacing="14" styleClass="form-card">
+                        <Label text="基础信息" styleClass="form-section-title"/>
+                        <VBox spacing="7">
+                            <Label text="规则名称 *" styleClass="form-label"/>
+                            <TextField fx:id="name" promptText="例如：雷达图片上传" styleClass="form-field"/>
+                        </VBox>
+                        <VBox spacing="7">
+                            <Label text="传输方向 *" styleClass="form-label"/>
+                            <ComboBox fx:id="transferType" prefWidth="180" styleClass="form-combo"/>
+                            <Label text="上传：本地 → FTP；下载：FTP → 本地。旧规则没有该字段时默认按上传处理。" wrapText="true" styleClass="field-hint"/>
+                        </VBox>
+                        <VBox spacing="7">
+                            <Label text="文件名称 / 说明" styleClass="form-label"/>
+                            <TextField fx:id="filename" promptText="可填写文件类型或说明" styleClass="form-field"/>
+                            <Label text="上传时检查本地最新 N 个文件；下载时检查 FTP 最新 N 个文件；此字段仅作说明，不作为文件名筛选条件。" wrapText="true" styleClass="field-hint"/>
+                        </VBox>
+                        <VBox spacing="7">
+                            <Label text="本地根目录 *" styleClass="form-label"/>
+                            <HBox spacing="8">
+                                <TextField fx:id="basePath" promptText="例如：D:\data\radar" styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="chooseBasePathButton" text="选择目录" onAction="#chooseBasePath" styleClass="button-secondary"/>
+                            </HBox>
+                        </VBox>
+                        <VBox spacing="7">
+                            <Label text="远程根目录 *" styleClass="form-label"/>
+                            <TextField fx:id="remoteBasePath" promptText="例如：/upload/radar" styleClass="form-field"/>
+                        </VBox>
+                    </VBox>
+
+                    <VBox spacing="13" styleClass="form-card">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label text="动态规则路径" styleClass="form-section-title" HBox.hgrow="ALWAYS"/>
+                            <Label text="小写不补零 · 大写补零" styleClass="hint-badge"/>
+                        </HBox>
+                        <VBox spacing="7">
+                            <Label text="规则路径 *" styleClass="form-label"/>
+                            <TextField fx:id="rulePath" promptText="例如：{year}/{MONTH}/{DAY}/{HH}" styleClass="form-field"/>
+                        </VBox>
+                        <GridPane hgap="10" vgap="8" styleClass="token-grid">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="33.33"/>
+                                <ColumnConstraints percentWidth="33.33"/>
+                                <ColumnConstraints percentWidth="33.34"/>
+                            </columnConstraints>
+                            <VBox spacing="3" styleClass="token-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <Label text="年" styleClass="token-title"/>
+                                <Label text="{year} = 2026" styleClass="token-code"/>
+                                <Label text="{YEAR} = 2026" styleClass="token-code"/>
+                            </VBox>
+                            <VBox spacing="3" styleClass="token-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <Label text="月" styleClass="token-title"/>
+                                <Label text="{month} = 8" styleClass="token-code"/>
+                                <Label text="{MONTH} = 08" styleClass="token-code"/>
+                            </VBox>
+                            <VBox spacing="3" styleClass="token-card" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                <Label text="日" styleClass="token-title"/>
+                                <Label text="{day} = 1" styleClass="token-code"/>
+                                <Label text="{DAY} = 01" styleClass="token-code"/>
+                            </VBox>
+                            <VBox spacing="3" styleClass="token-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <Label text="时（24小时制）" styleClass="token-title"/>
+                                <Label text="{hh} = 3" styleClass="token-code"/>
+                                <Label text="{HH} = 03" styleClass="token-code"/>
+                            </VBox>
+                            <VBox spacing="3" styleClass="token-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Label text="分" styleClass="token-title"/>
+                                <Label text="{mm} = 5" styleClass="token-code"/>
+                                <Label text="{MM} = 05" styleClass="token-code"/>
+                            </VBox>
+                            <VBox spacing="3" styleClass="token-card" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                <Label text="秒" styleClass="token-title"/>
+                                <Label text="{ss} = 9" styleClass="token-code"/>
+                                <Label text="{SS} = 09" styleClass="token-code"/>
+                            </VBox>
+                        </GridPane>
+                        <Label text="例如规则路径 {year}/{MONTH}/{DAY}/{HH}，在 2026-08-01 03:05:09 时会解析为 2026/08/01/03。" wrapText="true" styleClass="help-text"/>
+                        <Label fx:id="legacyNotice" text="忽略大小写，按补零解析。取消下方勾选后切换为按大小写判断是否补0。" wrapText="true" visible="false" managed="false" styleClass="legacy-notice"/>
+                        <CheckBox fx:id="legacyCompatibility" text="忽略大小写配置，直接补0" visible="false" managed="false"/>
+                    </VBox>
+
+                    <VBox spacing="12" styleClass="form-card">
+                        <Label text="时间偏移" styleClass="form-section-title"/>
+                        <GridPane hgap="14" vgap="7">
+                            <columnConstraints><ColumnConstraints minWidth="180" prefWidth="220"/><ColumnConstraints hgrow="ALWAYS"/></columnConstraints>
+                            <Label text="偏移分钟 *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                            <TextField fx:id="delayTime" text="0" promptText="例如：0、10、-5" styleClass="form-field" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
+                                <Label text="它决定“用哪个时间去替换上面的年月日时分秒占位符”，不会让程序等待这么久。" wrapText="true" styleClass="help-text-strong"/>
+                                <Label text="0：使用任务执行时的当前时间；10：使用当前时间 +10 分钟；-5：使用当前时间 -5 分钟。例如 10:00 执行、填写 -10，则路径按 09:50 解析。" wrapText="true" styleClass="field-hint"/>
+                            </VBox>
+                        </GridPane>
+                    </VBox>
+
+                    <VBox spacing="12" styleClass="form-card">
+                        <Label text="每次检查最新文件数" styleClass="form-section-title"/>
+                        <GridPane hgap="14" vgap="7">
+                            <columnConstraints><ColumnConstraints minWidth="180" prefWidth="220"/><ColumnConstraints hgrow="ALWAYS"/></columnConstraints>
+                            <Label text="每次检查最新文件数" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                            <TextField fx:id="latestFileCount" text="0" promptText="例如：1、2、3..." styleClass="form-field" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                            <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.rowSpan="2">
+                                <Label text="它决定每次执行该规则时检查的最新文件数量，不输入时使用全局默认值。上传检查本地最新 N 个，下载检查 FTP 最新 N 个。" wrapText="true" styleClass="help-text-strong"/>
+                                <Label text="上传：本地最新 N 个文件与 FTP 比对，远端不存在才上传；下载：FTP 最新 N 个文件与本地比对，本地不存在才下载。" wrapText="true" styleClass="field-hint"/>
+                            </VBox>
+                        </GridPane>
+                    </VBox>
+
+                    <VBox spacing="10" styleClass="form-card">
+                        <HBox alignment="CENTER_LEFT">
+                            <VBox spacing="3" HBox.hgrow="ALWAYS">
+                                <Label text="实时目录示例" styleClass="form-section-title"/>
+                                <Label text="根据当前输入实时计算，方便保存前确认最终本地目录和 FTP 目录是否正确。" styleClass="field-hint"/>
+                            </VBox>
+                            <Label text="3 组示例" styleClass="hint-badge"/>
+                        </HBox>
+                        <Label fx:id="previewNote" text="示例已应用时间偏移 0 分钟" wrapText="true" styleClass="preview-note"/>
+                        <TableView fx:id="previewTable" prefHeight="176" minHeight="176" maxHeight="176" styleClass="preview-table">
+                            <columns>
+                                <TableColumn fx:id="previewTimeColumn" text="日期时间" prefWidth="165"/>
+                                <TableColumn fx:id="previewLocalColumn" text="本地目录" prefWidth="305"/>
+                                <TableColumn fx:id="previewRemoteColumn" text="FTP 目录" prefWidth="305"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="dialog-footer">
+            <padding><Insets top="13" right="26" bottom="16" left="26"/></padding>
+            <Button text="关闭" onAction="#close" styleClass="button-secondary"/>
+            <Button fx:id="operate" text="添加规则" onAction="#save" styleClass="button-primary"/>
+        </HBox>
+    </bottom>
+</BorderPane>

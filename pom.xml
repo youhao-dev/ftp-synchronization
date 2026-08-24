@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.you</groupId>
+    <artifactId>ftp-upload-javafx</artifactId>
+    <version>1.0.0</version>
+    <name>FTP Upload JavaFX</name>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>21</maven.compiler.release>
+        <javafx.version>21.0.6</javafx.version>
+        <jackson.version>2.18.2</jackson.version>
+        <commons-net.version>3.11.1</commons-net.version>
+    </properties>
+
+    <dependencies>
+
+        <!-- JavaFX控件：编译时使用，最终由Liberica JRE Full提供 -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- JavaFX FXML：编译时使用，最终由Liberica JRE Full提供 -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- FTP -->
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>${commons-net.version}</version>
+        </dependency>
+
+        <!-- JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+
+        <!-- 最终JAR名称 -->
+        <finalName>ftp-upload-javafx</finalName>
+
+        <plugins>
+
+            <!-- ==================== Java编译 ==================== -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>21</release>
+                </configuration>
+            </plugin>
+
+            <!-- ==================== JavaFX ==================== -->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>cn.you.ftpupload.FtpUploadApplication</mainClass>
+                </configuration>
+            </plugin>
+
+            <!-- ==================== ProGuard代码混淆 ==================== -->
+            <!-- 必须放在Shade前面 -->
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>2.7.0</version>
+
+                <executions>
+                    <execution>
+                        <id>proguard-obfuscate</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+
+                    <!-- 输入Maven生成的普通JAR -->
+                    <injar>${project.build.finalName}.jar</injar>
+
+                    <!-- 开启代码混淆 -->
+                    <obfuscate>true</obfuscate>
+
+                    <!-- Maven依赖提供给ProGuard用于分析 -->
+                    <includeDependency>true</includeDependency>
+
+                    <!-- 第三方依赖本身不参与混淆 -->
+                    <includeDependencyInjar>false</includeDependencyInjar>
+
+                    <!-- Java 21运行库 -->
+                    <libs>
+                        <lib>${java.home}/jmods/java.base.jmod</lib>
+                        <lib>${java.home}/jmods/java.desktop.jmod</lib>
+                        <lib>${java.home}/jmods/java.logging.jmod</lib>
+                        <lib>${java.home}/jmods/java.xml.jmod</lib>
+                    </libs>
+
+                    <!-- ProGuard配置文件 -->
+                    <proguardInclude>${project.basedir}/proguard.conf</proguardInclude>
+
+                    <!-- Windows下防止命令行长度超限 -->
+                    <generateTemporaryConfigurationFile>true</generateTemporaryConfigurationFile>
+
+                    <!-- 混淆映射文件 -->
+                    <mappingFileName>proguard-map.txt</mappingFileName>
+
+                    <!-- 被keep的类和成员 -->
+                    <seedFileName>proguard-seeds.txt</seedFileName>
+
+                </configuration>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>com.guardsquare</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>7.7.0</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+
+            </plugin>
+
+            <!-- ==================== Shade胖JAR ==================== -->
+            <!-- ProGuard完成后，把Jackson、Commons-Net等第三方依赖打入JAR -->
+            <!-- JavaFX不打入JAR，由Liberica JRE Full提供 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.2</version>
+
+                <executions>
+                    <execution>
+                        <id>shade-fat-jar</id>
+                        <phase>package</phase>
+
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+
+                        <configuration>
+
+                            <!-- 不生成精简pom -->
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+
+                            <!-- 不删除依赖中的类 -->
+                            <minimizeJar>false</minimizeJar>
+
+                            <!--
+                                JavaFX不打入最终JAR。
+                                JavaFX运行环境由不同系统对应的Liberica JRE Full提供。
+                            -->
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.openjfx:javafx-base</exclude>
+                                    <exclude>org.openjfx:javafx-graphics</exclude>
+                                    <exclude>org.openjfx:javafx-controls</exclude>
+                                    <exclude>org.openjfx:javafx-fxml</exclude>
+                                </excludes>
+                            </artifactSet>
+
+                            <!-- 清除依赖JAR签名以及模块信息 -->
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>module-info.class</exclude>
+                                        <exclude>META-INF/versions/*/module-info.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+
+                            <transformers>
+
+                                <!-- 合并META-INF/services -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+
+                                <!-- 设置启动类 -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>cn.you.ftpupload.FtpUploadApplication</mainClass>
+                                </transformer>
+
+                            </transformers>
+
+                        </configuration>
+
+                    </execution>
+                </executions>
+
+            </plugin>
+
+        </plugins>
+
+    </build>
+
+</project>

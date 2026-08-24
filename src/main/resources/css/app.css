@@ -1,0 +1,701 @@
+/* ==================== 全局 ==================== */
+
+.root {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 14px;
+    -fx-text-fill: #263147;
+}
+
+.label,
+.button,
+.text-field,
+.password-field,
+.text-area,
+.combo-box,
+.check-box,
+.radio-button,
+.table-view,
+.menu-button,
+.context-menu,
+.tooltip {
+    -fx-font-family: "Microsoft YaHei UI";
+}
+
+.app-root,
+.dialog-root {
+    -fx-background-color: #f5f7fb;
+}
+
+
+/* ==================== 左侧导航 ==================== */
+
+.sidebar {
+    -fx-background-color: #172033;
+}
+
+.brand-box {
+    -fx-padding: 0 10px 18px 10px;
+}
+
+.brand-title {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.brand-subtitle {
+    -fx-text-fill: #9eabc3;
+    -fx-font-size: 13px;
+}
+
+.nav-group-title {
+    -fx-text-fill: #75829b;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 15px 10px 6px 10px;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #b9c3d7;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 12px;
+    -fx-cursor: hand;
+}
+
+.nav-button:hover {
+    -fx-background-color: #222e45;
+    -fx-text-fill: white;
+}
+
+/* 当前选中的导航 */
+.nav-button.nav-button-active {
+    -fx-background-color: #2d5fd3;
+    -fx-text-fill: white;
+}
+
+/* 当前导航悬停时继续保持蓝色，避免被普通 hover 覆盖 */
+.nav-button.nav-button-active:hover {
+    -fx-background-color: #2859c9;
+    -fx-text-fill: white;
+}
+
+.sidebar-footer {
+    -fx-padding: 12px 10px 2px 10px;
+    -fx-border-color: #2b3549 transparent transparent transparent;
+}
+
+.sidebar-muted {
+    -fx-text-fill: #6f7d97;
+    -fx-font-size: 12px;
+}
+
+.sidebar-version {
+    -fx-text-fill: #aeb9ce;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+
+/* ==================== 主页面 ==================== */
+
+.workspace,
+.page {
+    -fx-background-color: #f5f7fb;
+}
+
+.page-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #172033;
+}
+
+.page-subtitle,
+.dialog-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #778198;
+}
+
+.section-title,
+.form-section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #28344b;
+}
+
+.stat-card,
+.panel-card,
+.settings-card,
+.form-card {
+    -fx-background-color: white;
+    -fx-background-radius: 11px;
+    -fx-border-color: #e3e8f0;
+    -fx-border-radius: 11px;
+}
+
+.stat-card {
+    -fx-padding: 13px 15px;
+}
+
+.panel-card,
+.settings-card,
+.form-card {
+    -fx-padding: 16px;
+}
+
+.stat-label {
+    -fx-text-fill: #8791a5;
+    -fx-font-size: 12px;
+}
+
+.stat-value {
+    -fx-text-fill: #172033;
+    -fx-font-size: 23px;
+    -fx-font-weight: bold;
+}
+
+.stat-value-small {
+    -fx-text-fill: #2c3850;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+
+/* ==================== 通用按钮 ==================== */
+
+.button {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-background-radius: 7px;
+    -fx-padding: 8px 14px;
+    -fx-font-weight: 600;
+}
+
+.button:disabled {
+    -fx-opacity: 0.58;
+    -fx-cursor: default;
+}
+
+.toolbar-button {
+    -fx-padding: 9px 16px;
+}
+
+.button-primary {
+    -fx-background-color: #356ae6;
+    -fx-text-fill: white;
+}
+
+.button-primary:hover {
+    -fx-background-color: #2859cc;
+}
+
+.button-primary:pressed {
+    -fx-background-color: #234fb7;
+}
+
+.button-secondary {
+    -fx-background-color: white;
+    -fx-text-fill: #3a465f;
+    -fx-border-color: #d7deea;
+    -fx-border-radius: 7px;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #f4f6fa;
+    -fx-border-color: #cbd4e2;
+}
+
+.button-ghost {
+    -fx-background-color: transparent;
+    -fx-text-fill: #536078;
+}
+
+.button-ghost:hover {
+    -fx-background-color: #edf1f6;
+}
+
+.button-danger-ghost {
+    -fx-background-color: transparent;
+    -fx-text-fill: #c84646;
+}
+
+.button-danger-ghost:hover {
+    -fx-background-color: #fff0f0;
+}
+
+
+/* ==================== 表格 ==================== */
+
+.rules-table,
+.preview-table {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 13px;
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e2e7ef;
+    -fx-border-radius: 8px;
+    -fx-padding: 0;
+}
+
+.rules-table .column-header-background,
+.preview-table .column-header-background {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 8px 8px 0 0;
+}
+
+.rules-table .column-header,
+.rules-table .filler,
+.preview-table .column-header,
+.preview-table .filler {
+    -fx-background-color: transparent;
+    -fx-size: 40px;
+    -fx-border-color: transparent transparent #e8edf4 transparent;
+}
+
+.rules-table .column-header .label,
+.preview-table .column-header .label {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 13px;
+    -fx-text-fill: #59657c;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+
+/* ==================== 表格行 ==================== */
+
+.rules-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #eef2f7 transparent;
+    -fx-cell-size: 47px;
+}
+
+.preview-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #eef2f7 transparent;
+    -fx-cell-size: 42px;
+}
+
+.rules-table .table-row-cell:hover {
+    -fx-background-color: #f8fbff;
+}
+
+/* 选中行只修改背景，不再强制修改所有 Text 节点颜色 */
+.rules-table .table-row-cell:selected,
+.preview-table .table-row-cell:selected {
+    -fx-background-color: #eef4ff;
+}
+
+.rules-table .table-cell,
+.preview-table .table-cell {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 13px;
+    -fx-text-fill: #313c50;
+    -fx-border-color: transparent;
+    -fx-padding: 0 9px;
+    -fx-alignment: CENTER;
+}
+
+/* ==================== 表格状态按钮 ==================== */
+
+/* 运行中 */
+.rules-table .status-running {
+    -fx-text-fill: #16a34a;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+/* 已停止 */
+.rules-table .status-stopped {
+    -fx-text-fill: #64748b;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+/* 状态悬停 */
+.rules-table .status-running:hover,
+.rules-table .status-stopped:hover {
+    -fx-background-color: #f3f6fa;
+    -fx-cursor: hand;
+}
+
+/* ==================== 表格操作按钮 ==================== */
+
+/* 查看 */
+.rules-table .table-btn {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-background-color: transparent;
+    -fx-padding: 5px 7px;
+    -fx-font-size: 13px;
+    -fx-text-fill: #5b667a;
+    -fx-font-weight: 500;
+    -fx-cursor: hand;
+}
+
+/* 编辑 */
+.rules-table .table-btn.table-btn-primary {
+    -fx-text-fill: #356ae6;
+}
+
+/* 删除 */
+.rules-table .table-btn.table-btn-danger {
+    -fx-text-fill: #d24d4d;
+}
+
+.rules-table .table-btn:hover {
+    -fx-background-color: #edf1f6;
+}
+
+/* 编辑按钮悬停 */
+.rules-table .table-btn.table-btn-primary:hover {
+    -fx-background-color: #eef4ff;
+    -fx-text-fill: #2859cc;
+}
+
+/* 删除按钮悬停 */
+.rules-table .table-btn.table-btn-danger:hover {
+    -fx-background-color: #fff0f0;
+    -fx-text-fill: #c83939;
+}
+
+/* ==================== 系统日志级别 ==================== */
+
+/* INFO */
+.rules-table .table-cell.log-info {
+    -fx-text-fill: #356ae6;
+    -fx-font-weight: bold;
+}
+
+/* WARN */
+.rules-table .table-cell.log-warn {
+    -fx-text-fill: #b57600;
+    -fx-font-weight: bold;
+}
+
+/* ERROR */
+.rules-table .table-cell.log-error {
+    -fx-text-fill: #ca3e47;
+    -fx-font-weight: bold;
+}
+
+
+/* ==================== FTP 上传状态 ==================== */
+
+/* 上传成功 */
+.rules-table .table-cell.ftp-success {
+    -fx-text-fill: #18864b;
+    -fx-font-weight: bold;
+}
+
+/* 已存在、跳过等状态 */
+.rules-table .table-cell.ftp-skip {
+    -fx-text-fill: #7b8497;
+    -fx-font-weight: bold;
+}
+
+/* 上传失败 */
+.rules-table .table-cell.ftp-fail {
+    -fx-text-fill: #ca3e47;
+    -fx-font-weight: bold;
+}
+
+
+/* ==================== 底部状态栏 ==================== */
+
+.status-bar {
+    -fx-background-color: white;
+    -fx-border-color: #e2e8f0 transparent transparent transparent;
+}
+
+.status-dot {
+    -fx-text-fill: #27ae60;
+    -fx-font-size: 10px;
+}
+
+.status-text {
+    -fx-text-fill: #4e5a70;
+    -fx-font-size: 13px;
+}
+
+.status-hint {
+    -fx-text-fill: #98a1b2;
+    -fx-font-size: 12px;
+}
+
+.status-badge {
+    -fx-background-radius: 20px;
+    -fx-padding: 6px 11px;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.badge-idle {
+    -fx-background-color: #eef2f6;
+    -fx-text-fill: #647084;
+}
+
+.badge-running {
+    -fx-background-color: #e9f8ef;
+    -fx-text-fill: #168a49;
+}
+
+.hint-badge {
+    -fx-background-color: #eef4ff;
+    -fx-background-radius: 14px;
+    -fx-padding: 4px 9px;
+    -fx-text-fill: #356ae6;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+
+/* ==================== 新增 / 查看 / 编辑窗口 ==================== */
+
+.dialog-header {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #e7ecf3 transparent;
+}
+
+.dialog-title {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #172033;
+}
+
+.dialog-scroll,
+.settings-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.dialog-scroll > .viewport,
+.settings-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.dialog-content {
+    -fx-background-color: #f5f7fb;
+}
+
+
+/* ==================== 表单 ==================== */
+
+.form-label {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-text-fill: #3b465d;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+}
+
+.form-field {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+    -fx-border-color: #d7dee9;
+    -fx-border-radius: 7px;
+    -fx-background-radius: 7px;
+    -fx-padding: 9px 11px;
+    -fx-prompt-text-fill: #9da7b8;
+}
+
+.form-field:hover {
+    -fx-border-color: #c6cfdd;
+}
+
+.form-field:focused {
+    -fx-border-color: #5b84e8;
+    -fx-effect: dropshadow(gaussian, rgba(53,106,230,0.10), 6, 0, 0, 1);
+}
+
+/* 查看模式或禁用输入框，避免 JavaFX 默认变得过淡 */
+.form-field:disabled {
+    -fx-opacity: 1;
+    -fx-background-color: #f7f9fc;
+    -fx-text-fill: #59657c;
+    -fx-border-color: #e1e6ee;
+}
+
+.form-combo {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 14px;
+    -fx-background-color: white;
+    -fx-border-color: #d7dee9;
+    -fx-border-radius: 7px;
+    -fx-background-radius: 7px;
+}
+
+.form-combo:hover {
+    -fx-border-color: #c6cfdd;
+}
+
+.form-combo:focused {
+    -fx-border-color: #5b84e8;
+}
+
+/* ComboBox 右侧箭头区域 */
+.form-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.form-combo .arrow {
+    -fx-background-color: #718096;
+}
+
+.field-hint {
+    -fx-text-fill: #8490a5;
+    -fx-font-size: 12px;
+}
+
+.help-text {
+    -fx-text-fill: #66738a;
+    -fx-font-size: 13px;
+}
+
+.help-text-strong {
+    -fx-text-fill: #46546d;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.dialog-footer {
+    -fx-background-color: white;
+    -fx-border-color: #e7ecf3 transparent transparent transparent;
+}
+
+
+/* ==================== 时间占位符说明 ==================== */
+
+.token-grid {
+    -fx-padding: 2px 0 0 0;
+}
+
+.token-card {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e6ebf2;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-padding: 10px 12px;
+}
+
+.token-title {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-text-fill: #3b465d;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.token-code {
+    -fx-font-family: "Consolas";
+    -fx-text-fill: #52627e;
+    -fx-font-size: 12px;
+}
+
+.legacy-notice {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 13px;
+    -fx-background-color: #fff8e8;
+    -fx-background-radius: 7px;
+    -fx-padding: 9px 11px;
+    -fx-text-fill: #7b5a11;
+    -fx-border-color: #f0dfae;
+    -fx-border-radius: 7px;
+}
+
+.preview-note {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-background-color: #f4f7fc;
+    -fx-background-radius: 7px;
+    -fx-padding: 8px 10px;
+    -fx-text-fill: #62708a;
+    -fx-font-size: 12px;
+}
+
+
+/* ==================== FTP / 运行设置 ==================== */
+
+.settings-card {
+    -fx-padding: 17px;
+}
+
+.settings-status {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-text-fill: #657189;
+    -fx-font-size: 13px;
+}
+
+.code-path {
+    -fx-font-family: "Consolas";
+    -fx-background-color: #f7f9fc;
+    -fx-background-radius: 7px;
+    -fx-padding: 9px 11px;
+    -fx-text-fill: #536078;
+    -fx-font-size: 12px;
+}
+
+
+/* ==================== 输入控件 ==================== */
+
+.text-field,
+.password-field {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 14px;
+}
+
+.text-area {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 14px;
+}
+
+.combo-box {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 14px;
+}
+
+.combo-box .list-cell {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 14px;
+}
+
+
+/* ==================== Tooltip ==================== */
+
+.tooltip {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 13px;
+    -fx-background-color: #28344b;
+    -fx-text-fill: white;
+    -fx-background-radius: 6px;
+    -fx-padding: 7px 10px;
+}
+
+
+/* ==================== 滚动条 ==================== */
+
+.scroll-bar:vertical,
+.scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #c8d0dc;
+    -fx-background-radius: 8px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #aeb8c7;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 2px;
+}

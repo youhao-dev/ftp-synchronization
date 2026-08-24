@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.you.ftpupload.view.IndexController" styleClass="app-root">
+    <left>
+        <VBox prefWidth="210" minWidth="210" maxWidth="210" styleClass="sidebar">
+            <padding><Insets top="22" right="14" bottom="16" left="14"/></padding>
+            <VBox spacing="4" styleClass="brand-box">
+                <Label text="FTP Transfer" styleClass="brand-title"/>
+                <Label text="定时文件传输工具" styleClass="brand-subtitle"/>
+            </VBox>
+            <Label text="工作台" styleClass="nav-group-title"/>
+            <Button fx:id="navRulesButton" text="传输规则" maxWidth="Infinity" alignment="CENTER_LEFT" onAction="#showRulesPage" styleClass="nav-button"/>
+            <Button fx:id="navSystemButton" text="系统传输记录" maxWidth="Infinity" alignment="CENTER_LEFT" onAction="#showSystemLogPage" styleClass="nav-button"/>
+            <Button fx:id="navFtpButton" text="FTP 文件记录" maxWidth="Infinity" alignment="CENTER_LEFT" onAction="#showFtpLogPage" styleClass="nav-button"/>
+            <Label text="配置" styleClass="nav-group-title"/>
+            <Button fx:id="navSettingsButton" text="FTP 与运行设置" maxWidth="Infinity" alignment="CENTER_LEFT" onAction="#showSettingsPage" styleClass="nav-button"/>
+            <Region VBox.vgrow="ALWAYS"/>
+            <VBox spacing="4" styleClass="sidebar-footer">
+                <Label text="JavaFX 版本" styleClass="sidebar-muted"/>
+                <Label text="v2.1.0" styleClass="sidebar-version"/>
+            </VBox>
+        </VBox>
+    </left>
+
+    <center>
+        <StackPane styleClass="workspace">
+            <VBox fx:id="rulesPage" spacing="18" styleClass="page">
+                <padding><Insets top="24" right="28" bottom="20" left="28"/></padding>
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="传输规则" styleClass="page-title"/>
+                        <Label text="管理本地目录与 FTP 目录映射，同一套规则支持自动上传和下载。" styleClass="page-subtitle"/>
+                    </VBox>
+                    <Label fx:id="runningBadge" text="等待中" styleClass="status-badge,badge-idle"/>
+                    <Button text="立即执行" onAction="#runNow" styleClass="button-secondary,toolbar-button"/>
+                    <Button text="＋ 新增规则" onAction="#addItem" styleClass="button-primary,toolbar-button"/>
+                </HBox>
+                <HBox spacing="12">
+                    <VBox spacing="5" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <Label text="传输规则" styleClass="stat-label"/>
+                        <Label fx:id="ruleCountLabel" text="0" styleClass="stat-value"/>
+                    </VBox>
+                    <VBox spacing="5" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <Label text="执行频率" styleClass="stat-label"/>
+                        <Label fx:id="scheduleLabel" text="每 1 分钟" styleClass="stat-value-small"/>
+                    </VBox>
+                    <VBox spacing="5" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <Label text="最近完成" styleClass="stat-label"/>
+                        <Label fx:id="lastRunLabel" text="尚未执行" styleClass="stat-value-small"/>
+                    </VBox>
+                    <VBox spacing="5" styleClass="stat-card" HBox.hgrow="ALWAYS">
+                        <Label text="FTP 连接 / 池大小" styleClass="stat-label"/>
+                        <Label fx:id="poolStatusLabel" text="0 / 3" styleClass="stat-value-small"/>
+                    </VBox>
+                </HBox>
+                <VBox spacing="10" VBox.vgrow="ALWAYS" styleClass="panel-card">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <VBox spacing="2" HBox.hgrow="ALWAYS">
+                            <Label text="规则列表" styleClass="section-title"/>
+                            <Label text="双击规则可直接编辑。" styleClass="field-hint"/>
+                        </VBox>
+                        <Button text="刷新" onAction="#flushed" styleClass="button-ghost"/>
+                        <Button text="清空全部" onAction="#clearRules" styleClass="button-danger-ghost"/>
+                    </HBox>
+                    <TableView fx:id="rulesTable" VBox.vgrow="ALWAYS" styleClass="rules-table">
+                        <columns>
+                            <TableColumn fx:id="nameColumn" text="规则名称" prefWidth="135"/>
+                            <TableColumn fx:id="transferTypeColumn" text="方向" prefWidth="68"/>
+                            <TableColumn fx:id="filenameColumn" text="文件名称/说明" prefWidth="120"/>
+                            <TableColumn fx:id="basePathColumn" text="本地根目录" prefWidth="155"/>
+                            <TableColumn fx:id="rulePathColumn" text="规则路径" prefWidth="155"/>
+                            <TableColumn fx:id="remoteBasePathColumn" text="远程根目录" prefWidth="160"/>
+                            <TableColumn fx:id="delayTimeColumn" text="偏移/分钟" prefWidth="72"/>
+                            <TableColumn fx:id="latestFileCountColumn" text="检查文件数" prefWidth="72"/>
+                            <TableColumn fx:id="statusColumn" text="状态" prefWidth="82" sortable="false"/>
+                            <TableColumn fx:id="actionColumn" text="操作" prefWidth="180" sortable="false"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </VBox>
+
+            <VBox fx:id="systemLogPage" spacing="18" visible="false" managed="false" styleClass="page">
+                <padding><Insets top="24" right="28" bottom="20" left="28"/></padding>
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="系统传输记录" styleClass="page-title"/>
+                        <Label text="记录定时任务启动、规则执行、目录异常、配置变更等运行信息；内存仅保留最近 200 条。" styleClass="page-subtitle"/>
+                    </VBox>
+                    <Button text="清空记录" onAction="#clearSystemLogs" styleClass="button-secondary"/>
+                </HBox>
+                <VBox spacing="10" VBox.vgrow="ALWAYS" styleClass="panel-card">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="最近 200 条系统记录" styleClass="section-title" HBox.hgrow="ALWAYS"/>
+                        <Label text="实时更新 · 不写磁盘" styleClass="hint-badge"/>
+                    </HBox>
+                    <TableView fx:id="systemLogTable" VBox.vgrow="ALWAYS" styleClass="rules-table">
+                        <columns>
+                            <TableColumn fx:id="systemTimeColumn" text="时间" prefWidth="165"/>
+                            <TableColumn fx:id="systemLevelColumn" text="级别" prefWidth="90"/>
+                            <TableColumn fx:id="systemMessageColumn" text="内容" prefWidth="760"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </VBox>
+
+            <VBox fx:id="ftpLogPage" spacing="18" visible="false" managed="false" styleClass="page">
+                <padding><Insets top="24" right="28" bottom="20" left="28"/></padding>
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="FTP 文件记录" styleClass="page-title"/>
+                        <Label text="逐文件实时显示上传/下载成功、已存在和失败状态；内存滚动保留最近 200 条。" styleClass="page-subtitle"/>
+                    </VBox>
+                    <Button text="清空记录" onAction="#clearFtpLogs" styleClass="button-secondary"/>
+                </HBox>
+                <VBox spacing="10" VBox.vgrow="ALWAYS" styleClass="panel-card">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="FTP 文件明细" styleClass="section-title" HBox.hgrow="ALWAYS"/>
+                        <Label text="实时更新 · 最近 200 条" styleClass="hint-badge"/>
+                    </HBox>
+                    <TableView fx:id="ftpLogTable" VBox.vgrow="ALWAYS" styleClass="rules-table">
+                        <columns>
+                            <TableColumn fx:id="ftpTimeColumn" text="时间" prefWidth="158"/>
+                            <TableColumn fx:id="ftpRuleColumn" text="规则" prefWidth="125"/>
+                            <TableColumn fx:id="ftpFileColumn" text="文件" prefWidth="165"/>
+                            <TableColumn fx:id="ftpStatusColumn" text="状态" prefWidth="80"/>
+                            <TableColumn fx:id="ftpSizeColumn" text="大小" prefWidth="85"/>
+                            <TableColumn fx:id="ftpDurationColumn" text="耗时" prefWidth="82"/>
+                            <TableColumn fx:id="ftpRemoteColumn" text="服务器目录" prefWidth="260"/>
+                            <TableColumn fx:id="ftpMessageColumn" text="说明" prefWidth="250"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </VBox>
+
+            <VBox fx:id="settingsPage" spacing="18" visible="false" managed="false" styleClass="page">
+                <padding><Insets top="24" right="28" bottom="20" left="28"/></padding>
+                <VBox spacing="4">
+                    <Label text="FTP 与运行设置" styleClass="page-title"/>
+                    <Label text="FTP 参数、连接池与传输频率均可在此修改；保存后立即生效，下次启动会自动读取。" styleClass="page-subtitle"/>
+                </VBox>
+                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="settings-scroll">
+                    <content>
+                        <VBox spacing="14">
+                            <VBox spacing="13" styleClass="settings-card">
+                                <HBox alignment="CENTER_LEFT">
+                                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                                        <Label text="FTP 服务器" styleClass="section-title"/>
+                                        <Label text=" ftp.host / ftp.port / ftp.username / ftp.password 配置键。" styleClass="field-hint"/>
+                                    </VBox>
+                                    <Button fx:id="testConnectionButton" text="测试连接" onAction="#testConnection" styleClass="button-secondary"/>
+                                </HBox>
+                                <GridPane hgap="12" vgap="10">
+                                    <columnConstraints><ColumnConstraints percentWidth="50"/><ColumnConstraints percentWidth="50"/></columnConstraints>
+                                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                        <Label text="FTP 地址 *" styleClass="form-label"/>
+                                        <TextField fx:id="ftpHostField" promptText="例如：192.168.1.100" styleClass="form-field"/>
+                                    </VBox>
+                                    <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                        <Label text="FTP 端口 *" styleClass="form-label"/>
+                                        <TextField fx:id="ftpPortField" promptText="21" styleClass="form-field"/>
+                                    </VBox>
+                                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                        <Label text="用户名" styleClass="form-label"/>
+                                        <TextField fx:id="ftpUsernameField" promptText="username" styleClass="form-field"/>
+                                    </VBox>
+                                    <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                        <Label text="密码" styleClass="form-label"/>
+                                        <PasswordField fx:id="ftpPasswordField" promptText="password" styleClass="form-field"/>
+                                    </VBox>
+                                </GridPane>
+                                <Label text="安全提示：FTP 密码会保存在本机配置文件中（ftp-upload-settings.properties），请限制该文件的系统访问权限。" wrapText="true" styleClass="field-hint"/>
+                            </VBox>
+
+                            <VBox spacing="13" styleClass="settings-card">
+                                <VBox spacing="3">
+                                    <Label text="FTP 连接池与超时" styleClass="section-title"/>
+                                    <Label text="上传和下载任务都从连接池借用连接，避免每个文件都重复握手；异常连接会自动淘汰。" styleClass="field-hint"/>
+                                </VBox>
+                                <GridPane hgap="12" vgap="10">
+                                    <columnConstraints><ColumnConstraints percentWidth="33.33"/><ColumnConstraints percentWidth="33.33"/><ColumnConstraints percentWidth="33.34"/></columnConstraints>
+                                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                        <Label text="连接池大小" styleClass="form-label"/>
+                                        <TextField fx:id="poolSizeField" promptText="3" styleClass="form-field"/>
+                                        <Label text="建议 2~5，范围 1~16" styleClass="field-hint"/>
+                                    </VBox>
+                                    <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                        <Label text="连接池等待超时/ms" styleClass="form-label"/>
+                                        <TextField fx:id="poolBorrowTimeoutField" promptText="10000" styleClass="form-field"/>
+                                    </VBox>
+                                    <VBox spacing="6" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                        <Label text="连接超时/ms" styleClass="form-label"/>
+                                        <TextField fx:id="connectTimeoutField" promptText="10000" styleClass="form-field"/>
+                                    </VBox>
+                                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                        <Label text="控制读取超时/ms" styleClass="form-label"/>
+                                        <TextField fx:id="readTimeoutField" promptText="30000" styleClass="form-field"/>
+                                    </VBox>
+                                    <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                        <Label text="数据传输超时/ms" styleClass="form-label"/>
+                                        <TextField fx:id="dataTimeoutField" promptText="30000" styleClass="form-field"/>
+                                    </VBox>
+                                </GridPane>
+                            </VBox>
+
+                            <VBox spacing="13" styleClass="settings-card">
+                                <VBox spacing="3">
+                                    <Label text="文件传输检查计划" styleClass="section-title"/>
+                                    <Label text="修改后调度器会立即重新排期；上一轮未结束时不会启动重叠任务。" styleClass="field-hint"/>
+                                </VBox>
+                                <GridPane hgap="12" vgap="10">
+                                    <columnConstraints><ColumnConstraints percentWidth="25"/><ColumnConstraints percentWidth="25"/><ColumnConstraints percentWidth="25"/><ColumnConstraints percentWidth="25"/></columnConstraints>
+                                    <VBox spacing="6" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                        <Label text="执行频率" styleClass="form-label"/>
+                                        <HBox spacing="7">
+                                            <TextField fx:id="frequencyValueField" promptText="1" styleClass="form-field" HBox.hgrow="ALWAYS"/>
+                                            <ComboBox fx:id="frequencyUnitCombo" prefWidth="92" styleClass="form-combo"/>
+                                        </HBox>
+                                        <Label text="最小 5 秒，最大 24 小时" styleClass="field-hint"/>
+                                    </VBox>
+                                    <VBox spacing="6" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                        <Label text="默认每次检查最新文件数" styleClass="form-label"/>
+                                        <TextField fx:id="latestFileCountField" promptText="5" styleClass="form-field"/>
+                                        <Label text="默认最后 5 个文件" styleClass="field-hint"/>
+                                    </VBox>
+                                    <VBox spacing="6" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                        <Label text="文件稳定时间/秒" styleClass="form-label"/>
+                                        <TextField fx:id="fileStableSecondsField" promptText="3" styleClass="form-field"/>
+                                        <Label text="仅上传规则使用，避免上传仍在写入的本地文件" styleClass="field-hint"/>
+                                    </VBox>
+                                    <VBox spacing="6" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                                        <Label text="一分钟模式对齐秒" styleClass="form-label"/>
+                                        <TextField fx:id="scheduleSecondField" promptText="58" styleClass="form-field"/>
+                                        <Label text="频率=1分钟时首次按 :58 对齐" styleClass="field-hint"/>
+                                    </VBox>
+                                </GridPane>
+                            </VBox>
+
+                            <VBox spacing="8" styleClass="settings-card">
+                                <Label text="配置持久化" styleClass="section-title"/>
+                                <Label text="界面保存的配置写到以下文件；ftp-upload-settings.properties。" wrapText="true" styleClass="field-hint"/>
+                                <Label fx:id="settingsFileLabel" text="ftp-upload-settings.properties" wrapText="true" styleClass="code-path"/>
+                            </VBox>
+
+                            <HBox alignment="CENTER_RIGHT" spacing="10">
+                                <Label fx:id="settingsStatusLabel" text="配置修改后点击“保存设置”立即生效" HBox.hgrow="ALWAYS" styleClass="settings-status"/>
+                                <Button text="保存设置" onAction="#saveSettings" styleClass="button-primary,toolbar-button"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </VBox>
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="9" styleClass="status-bar">
+            <padding><Insets top="9" right="20" bottom="9" left="20"/></padding>
+            <Label text="●" styleClass="status-dot"/>
+            <Label fx:id="statusLabel" text="程序已就绪" styleClass="status-text" HBox.hgrow="ALWAYS"/>
+            <Label text="规则：pathRules.json · 日志：内存最近 200 条" styleClass="status-hint"/>
+        </HBox>
+    </bottom>
+</BorderPane>
