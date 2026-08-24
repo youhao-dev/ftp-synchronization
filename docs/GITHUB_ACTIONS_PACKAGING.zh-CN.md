@@ -19,7 +19,7 @@ ftp-synchronization-<版本>-macos-arm64.tar.gz
 
 ## 2. JAR 与 JRE 边界
 
-构建阶段使用 Liberica Java 21 `jdk+fx` 编译 JavaFX 源码。Maven Shade 仅聚合 Jackson、Commons Net 等非 JavaFX 运行依赖，并排除：
+构建阶段使用 `actions/setup-java@v5` 安装 Liberica Java 21 `jdk+fx` 并编译 JavaFX 源码。Maven Shade 仅聚合 Jackson、Commons Net 等非 JavaFX 运行依赖，并排除：
 
 ```text
 org.openjfx:javafx-base
@@ -38,7 +38,7 @@ com/sun/javafx/**
 *javafx*.dylib
 ```
 
-平台打包阶段使用 `actions/setup-java` 安装 Liberica `jre+fx`，把该目标系统、目标 CPU 的完整 JRE 复制到 `jre/`。随后检查：
+平台打包阶段同样使用 `actions/setup-java@v5` 安装 Liberica `jre+fx`，把该目标系统、目标 CPU 的完整 JRE 复制到 `jre/`。随后检查：
 
 ```text
 javafx.base
