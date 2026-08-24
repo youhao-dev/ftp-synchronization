@@ -1,0 +1,215 @@
+name: Build, test, and package
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    name: Build and test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Liberica JDK with JavaFX
+        uses: actions/setup-java@v6
+        with:
+          distribution: liberica
+          java-version: '21'
+          java-package: jdk+fx
+          cache: maven
+
+      - name: Install virtual display
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
+      - name: Make Maven Wrapper executable
+        run: chmod +x mvnw
+
+      - name: Test and build application JAR
+        run: xvfb-run -a ./mvnw -B -ntp clean verify
+
+      - name: Verify JavaFX is absent from application JAR
+        shell: bash
+        run: |
+          if jar tf target/ftp-synchronization.jar | grep -E '^(javafx/|com/sun/javafx/)|javafx.*\.(dll|so|dylib)$'; then
+            echo 'JavaFX content must not be stored in ftp-synchronization.jar.'
+            exit 1
+          fi
+
+      - name: Read project version
+        shell: bash
+        run: |
+          VERSION=$(./mvnw -q -DforceStdout help:evaluate -Dexpression=project.version)
+          printf '%s' "$VERSION" > target/version.txt
+          if [[ "$GITHUB_REF" == refs/tags/v* && "$GITHUB_REF_NAME" != "v$VERSION" ]]; then
+            echo "Tag $GITHUB_REF_NAME must match Maven version v$VERSION."
+            exit 1
+          fi
+
+      - name: Upload application JAR
+        uses: actions/upload-artifact@v7
+        with:
+          name: application-jar
+          path: |
+            target/ftp-synchronization.jar
+            target/version.txt
+          retention-days: 1
+
+  package:
+    name: Package ${{ matrix.platform }}-${{ matrix.arch }}
+    if: github.event_name != 'pull_request'
+    needs: build-test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: windows-2022
+            platform: windows
+            arch: x64
+            java-arch: x64
+            archive: zip
+          - runner: windows-11-arm
+            platform: windows
+            arch: arm64
+            java-arch: aarch64
+            archive: zip
+          - runner: ubuntu-24.04
+            platform: linux
+            arch: x64
+            java-arch: x64
+            archive: tar
+          - runner: ubuntu-24.04-arm
+            platform: linux
+            arch: arm64
+            java-arch: aarch64
+            archive: tar
+          - runner: macos-15-intel
+            platform: macos
+            arch: x64
+            java-arch: x64
+            archive: tar
+          - runner: macos-15
+            platform: macos
+            arch: arm64
+            java-arch: aarch64
+            archive: tar
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Download application JAR
+        uses: actions/download-artifact@v8
+        with:
+          name: application-jar
+          path: target
+
+      - name: Set up target Liberica JRE with JavaFX
+        uses: actions/setup-java@v6
+        with:
+          distribution: liberica
+          java-version: '21'
+          java-package: jre+fx
+          architecture: ${{ matrix.java-arch }}
+
+      - name: Install Linux virtual display
+        if: matrix.platform == 'linux'
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
+      - name: Assemble and test Windows package
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: |
+          $version = Get-Content -Raw target/version.txt
+          $bundleName = "ftp-synchronization-$version-${{ matrix.platform }}-${{ matrix.arch }}"
+          $bundle = Join-Path dist $bundleName
+          New-Item -ItemType Directory -Force -Path $bundle | Out-Null
+          Copy-Item -Recurse -Force -Path $env:JAVA_HOME -Destination (Join-Path $bundle 'jre')
+          Copy-Item target/ftp-synchronization.jar (Join-Path $bundle 'ftp-synchronization.jar')
+          Copy-Item packaging/windows/run.bat (Join-Path $bundle 'run.bat')
+          Copy-Item application.properties.example,README.md,THIRD-PARTY-NOTICES.md -Destination $bundle
+          Copy-Item -Recurse docs -Destination (Join-Path $bundle 'docs')
+          $modules = & (Join-Path $bundle 'jre/bin/java.exe') --list-modules
+          foreach ($module in 'javafx.base','javafx.graphics','javafx.controls','javafx.fxml') {
+            if (-not ($modules -match "^$module@")) { throw "Bundled JRE is missing $module" }
+          }
+          $process = Start-Process -FilePath (Join-Path $bundle 'jre/bin/java.exe') -ArgumentList '-jar','ftp-synchronization.jar' -WorkingDirectory $bundle -PassThru
+          Start-Sleep -Seconds 8
+          if ($process.HasExited) { throw "Application exited during GUI smoke test with code $($process.ExitCode)" }
+          Stop-Process -Id $process.Id -Force
+          $archive = Join-Path dist "$bundleName.zip"
+          Compress-Archive -Path $bundle -DestinationPath $archive -CompressionLevel Optimal
+          (Get-FileHash -Algorithm SHA256 $archive).Hash.ToLowerInvariant() + "  $bundleName.zip" | Set-Content -NoNewline "$archive.sha256"
+
+      - name: Assemble and test Unix package
+        if: matrix.platform != 'windows'
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION=$(cat target/version.txt)
+          BUNDLE_NAME="ftp-synchronization-$VERSION-${{ matrix.platform }}-${{ matrix.arch }}"
+          BUNDLE="dist/$BUNDLE_NAME"
+          mkdir -p "$BUNDLE"
+          cp -R "$JAVA_HOME" "$BUNDLE/jre"
+          cp target/ftp-synchronization.jar "$BUNDLE/ftp-synchronization.jar"
+          cp application.properties.example README.md THIRD-PARTY-NOTICES.md "$BUNDLE/"
+          cp -R docs "$BUNDLE/docs"
+          if [[ '${{ matrix.platform }}' == 'macos' ]]; then
+            cp packaging/macos/run.command "$BUNDLE/run.command"
+            chmod +x "$BUNDLE/run.command"
+          else
+            cp packaging/unix/run.sh "$BUNDLE/run.sh"
+            chmod +x "$BUNDLE/run.sh"
+          fi
+          for module in javafx.base javafx.graphics javafx.controls javafx.fxml; do
+            "$BUNDLE/jre/bin/java" --list-modules | grep -q "^$module@"
+          done
+          if [[ '${{ matrix.platform }}' == 'linux' ]]; then
+            xvfb-run -a "$BUNDLE/jre/bin/java" -jar "$BUNDLE/ftp-synchronization.jar" &
+          else
+            "$BUNDLE/jre/bin/java" -jar "$BUNDLE/ftp-synchronization.jar" &
+          fi
+          APP_PID=$!
+          sleep 8
+          if ! kill -0 "$APP_PID" 2>/dev/null; then wait "$APP_PID"; exit 1; fi
+          kill "$APP_PID"
+          wait "$APP_PID" 2>/dev/null || true
+          tar -C dist -czf "dist/$BUNDLE_NAME.tar.gz" "$BUNDLE_NAME"
+          (cd dist && shasum -a 256 "$BUNDLE_NAME.tar.gz" > "$BUNDLE_NAME.tar.gz.sha256")
+
+      - name: Upload platform package
+        uses: actions/upload-artifact@v7
+        with:
+          name: ftp-synchronization-${{ matrix.platform }}-${{ matrix.arch }}
+          path: |
+            dist/*.zip
+            dist/*.zip.sha256
+            dist/*.tar.gz
+            dist/*.tar.gz.sha256
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: package
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download all platform packages
+        uses: actions/download-artifact@v8
+        with:
+          pattern: ftp-synchronization-*
+          path: release
+          merge-multiple: true
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" release/* --verify-tag --generate-notes --title "FTP Synchronization $GITHUB_REF_NAME"
